@@ -8,10 +8,48 @@ import { SendMailDto } from './dto/mail.dto';
 export class MailController {
   constructor(private readonly mailService: MailService) {}
 
-  @ApiOperation({ summary: '메일 전송 테스트' })
+  @ApiOperation({ summary: '일반 메일 전송' })
   @ApiResponse({ status: 201, description: '성공적으로 메일 전송 완료' })
   @Post()
   async sendMail(@Body() body: SendMailDto) {
+    try {
+      await this.mailService.sendEmail(
+        body.address,
+        body.mailTitle,
+        body.mailContents,
+      );
+      return {
+        success: true,
+      };
+    } catch (error) {
+      console.error('Error sending email:', error);
+      return { message: 'Failed to send email.' };
+    }
+  }
+
+  @ApiOperation({ summary: '인증 메일 전송' })
+  @ApiResponse({ status: 201, description: '성공적으로 메일 전송 완료' })
+  @Post('verification')
+  async sendVerificationMail(@Body() body: SendMailDto) {
+    try {
+      await this.mailService.sendEmail(
+        body.address,
+        body.mailTitle,
+        body.mailContents,
+      );
+      return {
+        success: true,
+      };
+    } catch (error) {
+      console.error('Error sending email:', error);
+      return { message: 'Failed to send email.' };
+    }
+  }
+
+  @ApiOperation({ summary: '배치 메일 전송' })
+  @ApiResponse({ status: 201, description: '성공적으로 메일 전송 완료' })
+  @Post('batch')
+  async sendBatchMail(@Body() body: SendMailDto) {
     try {
       await this.mailService.sendEmail(
         body.address,
