@@ -1,18 +1,23 @@
-# STEP 1: 빌드
-FROM node:16 AS builder
+# 빌드 단계
+FROM node:18-alpine AS builder
 WORKDIR /app
-COPY package*.json ./  
-RUN npm install --omit=dev 
+COPY package*.json ./
+RUN npm install # 모든 의존성 설치
 COPY . .
 RUN npm run build
 
-# STEP 2: 실행 
-FROM node:16-alpine
+# 실행 단계
+# 실행 단계
+FROM node:18-alpine
 WORKDIR /app
-ENV NODE_ENV production
 COPY --from=builder /app/dist ./dist
+COPY package*.json ./
+COPY --from=builder /app/node_modules ./node_modules
+ENV NODE_ENV=production
 
 RUN apk add --no-cache tini
 ENTRYPOINT ["/sbin/tini", "--"]
+
 EXPOSE 3000
-CMD ["npm", "start:prod"]
+CMD ["node", "dist/main"]
+
