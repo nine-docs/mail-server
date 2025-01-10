@@ -4,7 +4,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SendMailDto } from './dto/mail.dto';
 
 @ApiTags('mail Server API')
-@Controller('mail')
+@Controller('api/v1/mail')
 export class MailController {
   constructor(private readonly mailService: MailService) {}
 
