@@ -9,12 +9,8 @@ export class MailService {
     private readonly configService: ConfigService,
   ) {}
 
-  async sendCommonMail(
-    address: string,
-    mailTitle: string,
-    mailContents: string,
-  ) {
-    await this.mailerService.sendMail({
+  sendCommonMail(address: string, mailTitle: string, mailContents: string) {
+    this.mailerService.sendMail({
       to: address,
       from: this.configService.get<string>('GMAIL_SMTP_USER'),
       html: `
@@ -72,8 +68,8 @@ export class MailService {
     });
   }
 
-  async sendVerificationMail(address: string, verificationCode: string) {
-    await this.mailerService.sendMail({
+  sendVerificationMail(address: string, verificationCode: string) {
+    this.mailerService.sendMail({
       to: address,
       from: this.configService.get<string>('GMAIL_SMTP_USER'),
       html: `
