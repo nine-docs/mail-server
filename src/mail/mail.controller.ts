@@ -4,6 +4,8 @@ import {
   Body,
   UsePipes,
   ValidationPipe,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { MailService } from './mail.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -31,11 +33,15 @@ export class MailController {
         body.mailContents,
       );
       return {
-        success: true,
+        status: 201,
+        message: '일반메일 요청에 성공했습니다.',
       };
     } catch (error) {
       console.error('일반메일 전송 요청 실패:', error);
-      return { message: '일반메일전송을 요청하는데 실패했습니다.' };
+      throw new HttpException(
+        '일반메일 전송을 요청하는데 실패했습니다.',
+        HttpStatus.INTERNAL_SERVER_ERROR, // 500 에러 코드
+      );
     }
   }
 
@@ -52,11 +58,15 @@ export class MailController {
         body.verificationCode,
       );
       return {
-        success: true,
+        status: 201,
+        message: '인증메일 요청에 성공했습니다.',
       };
     } catch (error) {
       console.error('인증메일 전송 요청 실패:', error);
-      return { message: '인증메일전송을 요청하는데 실패했습니다.' };
+      throw new HttpException(
+        '인증메일 전송을 요청하는데 실패했습니다.',
+        HttpStatus.INTERNAL_SERVER_ERROR, // 500 에러 코드
+      );
     }
   }
 
@@ -74,11 +84,15 @@ export class MailController {
         body.articleLink,
       );
       return {
-        success: true,
+        status: 201,
+        message: '배치메일 전송에 성공했습니다.',
       };
     } catch (error) {
-      console.error('배치 메일 전송 실패:', error);
-      return { message: '배치메일을 전송하는데 실패했습니다.' };
+      console.error('배치메일 전송 실패:', error);
+      throw new HttpException(
+        '배치메일 전송에 실패했습니다.',
+        HttpStatus.INTERNAL_SERVER_ERROR, // 500 에러 코드
+      );
     }
   }
 }
