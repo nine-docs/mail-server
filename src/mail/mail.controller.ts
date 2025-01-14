@@ -1,4 +1,10 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { MailService } from './mail.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CommonMailDto } from './dto/commonMail.dto';
@@ -7,6 +13,7 @@ import { BatchMailDto } from './dto/batchMail.dto';
 
 @ApiTags('mail Server API')
 @Controller('api/v1/mail')
+@UsePipes(new ValidationPipe())
 export class MailController {
   constructor(private readonly mailService: MailService) {}
 
