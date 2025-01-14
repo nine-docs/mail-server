@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Injectable()
 export class MailService {
@@ -30,44 +32,6 @@ export class MailService {
     });
   }
 
-  async sendBatchMail(
-    addressList: string[],
-    question: string,
-    articleLink: string,
-  ) {
-    await this.mailerService.sendMail({
-      to: addressList,
-      from: this.configService.get<string>('GMAIL_SMTP_USER'),
-      html: `
-      <!DOCTYPE html>
-<html>
-<head>
-  <title> ${'오늘의 질문 : '} ${question}</title>
-  <style>
-    .button {
-      display: inline-block;
-      padding: 10px 20px;
-      text-align: center;
-      text-decoration: none;
-      background-color: #4CAF50; /* Green */
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-  </style>
-</head>
-<body>
-
-  <a href="${articleLink}" class="button">답변 보러 가기</a>
-
-</body>
-</html>
-  `, // HTML 콘텐츠
-      subject: question,
-    });
-  }
-
   sendVerificationMail(address: string, verificationCode: string) {
     this.mailerService.sendMail({
       to: address,
@@ -87,5 +51,58 @@ export class MailService {
   `, // HTML 콘텐츠
       subject: '9docs에서 온 인증코드 입니다.',
     });
+  }
+
+  async sendBatchMail(
+    addressList: string[],
+    question: string,
+    articleLink: string,
+  ) {
+    const htmlFile = this.readHtmlFile('commonMail.html');
+    if (!htmlFile) {
+      return { message: 'HTML 템플릿을 찾을 수 없습니다.' };
+    }
+
+    // 이미지 경로 설정 (중요)
+
+    const htmlToSend = this.replacePlaceholders(htmlFile, {
+      question,
+      articleLink,
+    });
+
+    try {
+      await this.mailerService.sendMail({
+        to: addressList,
+        from: '보내는 사람 이메일 주소',
+        subject: question,
+        html: htmlToSend,
+      });
+      return { message: 'HTML 이메일 전송 성공' };
+    } catch (error) {
+      console.error('HTML 이메일 전송 실패:', error);
+      return { message: 'HTML 이메일 전송 실패' };
+    }
+  }
+
+  private readHtmlFile(filePath: string): string | null {
+    try {
+      const templatePath = path.join(__dirname, '../templates', filePath); // 경로 수정
+      return fs.readFileSync(templatePath, 'utf-8');
+    } catch (error) {
+      console.error('HTML 파일 읽기 실패:', error);
+      return null;
+    }
+  }
+
+  private replacePlaceholders(
+    html: string,
+    data: { [key: string]: string },
+  ): string {
+    let replacedHtml = html;
+    for (const key in data) {
+      const regex = new RegExp(`\\$\\{${key}\\}`, 'g'); // 정규식 수정 (이스케이프 처리)
+      replacedHtml = replacedHtml.replace(regex, data[key]);
+    }
+    return replacedHtml;
   }
 }
