@@ -35,7 +35,7 @@ describe('MailService', () => {
     };
     (mockMailerService.sendMail as jest.Mock).mockResolvedValue(true); //개발자가 제어할 수 없는 값에 대해서만 모킹합니다.
 
-    await service.sendEmail(
+    await service.sendCommonMail(
       emailData.address,
       emailData.mailTitle,
       emailData.mailContents,

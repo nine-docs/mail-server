@@ -1,7 +1,7 @@
 import { IsString, IsNotEmpty, IsEmail, Length } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class SendMailDto {
+export class CommonMailDto {
   @ApiProperty({ description: '수신자 이메일 주소' })
   @IsString()
   @IsNotEmpty()
