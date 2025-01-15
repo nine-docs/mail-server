@@ -11,45 +11,59 @@ export class MailService {
   ) {}
 
   sendCommonMail(address: string, mailTitle: string, mailContents: string) {
-    this.mailerService.sendMail({
-      to: address,
-      from: this.configService.get<string>('GMAIL_SMTP_USER'),
-      html: `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>일반 메일입니다. 메일 내용은 다음과 같습니다.</title>
-      </head>
-      <body>
-      
-        <button type="button">${mailContents}</button>
-      
-      </body>
-      </html>
-  `, // HTML 콘텐츠
-      subject: mailTitle,
+    const html = readHtmlFile('common-template.html');
+    if (!html) {
+      console.error('HTML 템플릿을 찾을 수 없습니다.');
+      throw new Error();
+    }
+
+    const htmlToSend = replacePlaceholders(html, {
+      mailContents,
     });
+
+    this.mailerService
+      .sendMail({
+        to: address,
+        from: this.configService.get<string>('GMAIL_SMTP_USER'),
+        subject: mailTitle,
+        html: htmlToSend,
+      })
+      .catch((error) => {
+        // Promise의 catch 메서드를 사용하여 에러 처리
+        console.error('전송에 실패했습니다 : ', error);
+      });
+    // 실패와 상관없이 전송을 기다리지는 않습니다.
+
+    // try와 await 동기처리를 같이 쓰지 않으면 에러가 발생합니다.
+    // try캐치 안에 있어도, 비동기처리면, 서버가 터짐.
   }
 
   sendVerificationMail(address: string, verificationCode: string) {
-    this.mailerService.sendMail({
-      to: address,
-      from: this.configService.get<string>('GMAIL_SMTP_USER'),
-      html: `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>다음은 인증코드입니다.</title>
-      </head>
-      <body>
-      
-        <button type="button">${verificationCode}</button>
-      
-      </body>
-      </html>
-  `, // HTML 콘텐츠
-      subject: '9docs에서 온 인증코드 입니다.',
+    const html = readHtmlFile('verification-template.html');
+    if (!html) {
+      console.error('HTML 템플릿을 찾을 수 없습니다.');
+      throw new Error();
+    }
+
+    const htmlToSend = replacePlaceholders(html, {
+      verificationCode,
     });
+
+    this.mailerService
+      .sendMail({
+        to: address,
+        from: this.configService.get<string>('GMAIL_SMTP_USER'),
+        subject: '구docs에서 보낸 인증메일입니다.',
+        html: htmlToSend,
+      })
+      .catch((error) => {
+        // Promise의 catch 메서드를 사용하여 에러 처리
+        console.error('전송에 실패했습니다 : ', error);
+      });
+    // 실패와 상관없이 전송합니다.
+
+    // try와 await 동기처리를 같이 쓰지 않으면 에러가 발생합니다.
+    // try캐치 안에 있어도, 비동기처리면, 서버가 터짐.
   }
 
   async sendBatchMail(
@@ -57,7 +71,7 @@ export class MailService {
     question: string,
     articleLink: string,
   ) {
-    const html = readHtmlFile('mail-template.html');
+    const html = readHtmlFile('batch-template.html');
     if (!html) {
       console.error('HTML 템플릿을 찾을 수 없습니다.');
       throw new Error();
@@ -71,7 +85,7 @@ export class MailService {
     try {
       await this.mailerService.sendMail({
         to: addressList,
-        from: '보내는 사람 이메일 주소',
+        from: this.configService.get<string>('GMAIL_SMTP_USER'),
         subject: question,
         html: htmlToSend,
       });
