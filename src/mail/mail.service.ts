@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
-import * as fs from 'fs';
-import * as path from 'path';
+import { readHtmlFile, replacePlaceholders } from '../utils/template.util';
 
 @Injectable()
 export class MailService {
@@ -58,14 +57,13 @@ export class MailService {
     question: string,
     articleLink: string,
   ) {
-    const htmlFile = this.readHtmlFile('commonMail.html');
-    if (!htmlFile) {
-      return { message: 'HTML 템플릿을 찾을 수 없습니다.' };
+    const html = readHtmlFile('mail-template.html');
+    if (!html) {
+      console.error('HTML 템플릿을 찾을 수 없습니다.');
+      throw new Error();
     }
 
-    // 이미지 경로 설정 (중요)
-
-    const htmlToSend = this.replacePlaceholders(htmlFile, {
+    const htmlToSend = replacePlaceholders(html, {
       question,
       articleLink,
     });
@@ -80,29 +78,6 @@ export class MailService {
       return { message: 'HTML 이메일 전송 성공' };
     } catch (error) {
       console.error('HTML 이메일 전송 실패:', error);
-      return { message: 'HTML 이메일 전송 실패' };
     }
-  }
-
-  private readHtmlFile(filePath: string): string | null {
-    try {
-      const templatePath = path.join(__dirname, '../templates', filePath); // 경로 수정
-      return fs.readFileSync(templatePath, 'utf-8');
-    } catch (error) {
-      console.error('HTML 파일 읽기 실패:', error);
-      return null;
-    }
-  }
-
-  private replacePlaceholders(
-    html: string,
-    data: { [key: string]: string },
-  ): string {
-    let replacedHtml = html;
-    for (const key in data) {
-      const regex = new RegExp(`\\$\\{${key}\\}`, 'g'); // 정규식 수정 (이스케이프 처리)
-      replacedHtml = replacedHtml.replace(regex, data[key]);
-    }
-    return replacedHtml;
   }
 }

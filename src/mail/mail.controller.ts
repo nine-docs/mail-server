@@ -9,9 +9,9 @@ import {
 } from '@nestjs/common';
 import { MailService } from './mail.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CommonMailDto } from './dto/commonMail.dto';
-import { VertificationMailDto } from './dto/verificationMail.dto';
-import { BatchMailDto } from './dto/batchMail.dto';
+import { CommonMailDto } from './dto/common-mail.dto';
+import { VertificationMailDto } from './dto/verification-mail.dto';
+import { BatchMailDto } from './dto/batch-mail.dto';
 
 @ApiTags('mail Server API')
 @Controller('api/v1/mail')
