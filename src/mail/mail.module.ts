@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { MailService } from './mail.service.gmail'; // 서비스 추가
+import { MailService } from './mail.service'; // 서비스 추가
 import { MailController } from './mail.controller'; // 컨트롤러 추가
 import { ConfigService, ConfigModule } from '@nestjs/config';
+import { AwsService } from 'src/aws/aws.service';
 
 @Module({
   imports: [
@@ -37,7 +38,7 @@ import { ConfigService, ConfigModule } from '@nestjs/config';
     }),
   ],
   controllers: [MailController], // 컨트롤러 등록
-  providers: [MailService], // 서비스 등록
+  providers: [MailService, AwsService], // 서비스 등록
   exports: [MailService], // 다른 모듈에서 사용 가능하도록 export
 })
 export class MailModule {}

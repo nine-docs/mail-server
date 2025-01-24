@@ -8,7 +8,7 @@ import {
   HttpStatus,
   Get,
 } from '@nestjs/common';
-import { MailService } from './mail.service.gmail';
+import { MailService } from './mail.service';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CommonMailDto } from './dto/common-mail.dto';
 import { VertificationMailDto } from './dto/verification-mail.dto';
