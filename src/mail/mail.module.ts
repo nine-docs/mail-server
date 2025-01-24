@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { MailService } from './mail.service'; // 서비스 추가
+import { MailService } from './mail.service.gmail'; // 서비스 추가
 import { MailController } from './mail.controller'; // 컨트롤러 추가
 import { ConfigService, ConfigModule } from '@nestjs/config';
 
