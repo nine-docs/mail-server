@@ -18,10 +18,10 @@ export class AwsService {
     });
   }
 
-  async sendEmail(to: string, subject: string, body: string) {
+  async sendEmail(to: string[], subject: string, body: string) {
     const params = {
       Destination: {
-        ToAddresses: [to],
+        ToAddresses: to,
       },
       Message: {
         Body: {

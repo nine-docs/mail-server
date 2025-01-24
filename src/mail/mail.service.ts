@@ -12,11 +12,7 @@ export class MailService {
     private readonly awsService: AwsService,
   ) {}
 
-  async sendCommonMail(
-    address: string,
-    mailTitle: string,
-    mailContents: string,
-  ) {
+  sendCommonMail(address: string, mailTitle: string, mailContents: string) {
     const html = readHtmlFile('common-template.html');
     if (!html) {
       console.error('HTML 템플릿을 찾을 수 없습니다.');
@@ -27,13 +23,14 @@ export class MailService {
       mailContents,
     });
 
-    await this.awsService
-      .sendEmail(address, mailTitle, htmlToSend)
+    this.awsService
+      .sendEmail([address], mailTitle, htmlToSend)
       .catch((error) => {
         // Promise의 catch 메서드를 사용하여 에러 처리
         console.error('전송에 실패했습니다 : ', error);
       });
 
+    // 동기처리 X
     // 실패와 상관없이 전송을 기다리지는 않습니다.
     // try와 await 동기처리를 같이 쓰지 않으면 에러가 발생합니다.
     // try캐치 안에 있어도, 비동기처리면, 서버가 터짐.
