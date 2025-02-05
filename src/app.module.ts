@@ -4,11 +4,12 @@ import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    MailModule,
     ConfigModule.forRoot({
       envFilePath: [],
       isGlobal: true, // 전역 모듈로 사용
     }),
+    MailModule,
   ],
+  providers: [],
 })
 export class AppModule {}

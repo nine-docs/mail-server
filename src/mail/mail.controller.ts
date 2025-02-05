@@ -6,15 +6,10 @@ import {
   ValidationPipe,
   HttpException,
   HttpStatus,
+  Get,
 } from '@nestjs/common';
 import { MailService } from './mail.service';
-import {
-  ApiCreatedResponse,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-  getSchemaPath,
-} from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CommonMailDto } from './dto/common-mail.dto';
 import { VertificationMailDto } from './dto/verification-mail.dto';
 import { BatchMailDto } from './dto/batch-mail.dto';
@@ -24,6 +19,21 @@ import { BatchMailDto } from './dto/batch-mail.dto';
 @UsePipes(new ValidationPipe())
 export class MailController {
   constructor(private readonly mailService: MailService) {}
+
+  @ApiOperation({ summary: '헬스 체크', description: '서비스 상태 확인' })
+  @ApiOkResponse({
+    description: '정상 작동',
+    schema: {
+      type: 'object',
+      properties: { success: { type: 'boolean', example: true } },
+    },
+  })
+  @Get('health')
+  async healthCheck() {
+    return {
+      success: true,
+    };
+  }
 
   @ApiOperation({
     summary: '일반 메일 전송',
