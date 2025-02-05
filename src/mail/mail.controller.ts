@@ -29,7 +29,7 @@ export class MailController {
     },
   })
   @Get('health')
-  async healthCheck() {
+  async healthCheck1() {
     return {
       success: true,
     };
