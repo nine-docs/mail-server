@@ -31,13 +31,13 @@ export class BatchMailDto {
   @ApiProperty({
     description: '질문 내용',
     minLength: 4, // 최소 길이 명시
-    maxLength: 100, // 최대 길이 명시
+    maxLength: 300, // 최대 길이 명시
     example: '구글의 주소는 어디일까요? (4~100자)',
     required: true, // 필수 속성 명시
   })
   @IsString()
   @IsNotEmpty()
-  @Length(4, 100)
+  @Length(4, 300)
   question: string;
 
   @ApiProperty({
