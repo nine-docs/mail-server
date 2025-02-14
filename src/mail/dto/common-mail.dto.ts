@@ -18,13 +18,13 @@ export class CommonMailDto {
   @ApiProperty({
     description: '메일 제목',
     minLength: 4, // 최소 길이 명시
-    maxLength: 100, // 최대 길이 명시
+    maxLength: 300, // 최대 길이 명시
     example: '구docs에서 안내메일드립니다. (4~100자)',
     required: true, // 필수 속성 명시
   })
   @IsString()
   @IsNotEmpty()
-  @Length(4, 100)
+  @Length(4, 300)
   mailTitle: string;
 
   @ApiProperty({
