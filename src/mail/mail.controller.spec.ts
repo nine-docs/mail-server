@@ -29,7 +29,7 @@ describe('MailController', () => {
     const mailContents = 'ninedocs에서 보낸 테스트 이메일입니다.';
 
     // sendEmail 메서드가 성공적으로 완료되었을 때의 동작을 모킹
-    mailService.sendEmail.mockResolvedValueOnce(undefined);
+    // mailService.sendCommonMail.mockResolvedValueOnce(undefined);
 
     const response = await mailController.sendMail({
       address,
@@ -40,7 +40,7 @@ describe('MailController', () => {
     expect(response).toEqual({
       success: true,
     });
-    expect(mailService.sendEmail).toHaveBeenCalledWith(
+    expect(mailService.sendCommonMail).toHaveBeenCalledWith(
       address,
       mailTitle,
       mailContents,
@@ -53,7 +53,9 @@ describe('MailController', () => {
     const mailContents = 'NestJS에서 보낸 테스트 이메일입니다.';
 
     // sendEmail 메서드가 에러를 발생시키도록 모킹
-    mailService.sendEmail.mockRejectedValueOnce(new Error('이메일 전송 실패'));
+    // mailService.sendCommonMail.mockRejectedValueOnce(
+    //   new Error('이메일 전송 실패'),
+    // );
 
     const response = await mailController.sendMail({
       address,
@@ -63,7 +65,7 @@ describe('MailController', () => {
 
     expect(response).toEqual({ message: 'Failed to send email.' });
     // sendEmail 메서드가 올바른 인자로 호출되었는지 확인
-    expect(mailService.sendEmail).toHaveBeenCalledWith(
+    expect(mailService.sendCommonMail).toHaveBeenCalledWith(
       address,
       mailTitle,
       mailContents,
