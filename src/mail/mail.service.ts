@@ -48,7 +48,7 @@ export class MailService {
     });
 
     this.awsService
-      .sendEmail([address], '팔docs에서 보낸 인증메일입니다.', htmlToSend)
+      .sendEmail([address], '구docs에서 보낸 인증메일입니다.', htmlToSend)
       .catch((error) => {
         // Promise의 catch 메서드를 사용하여 에러 처리
         console.error('전송에 실패했습니다 : ', error);
