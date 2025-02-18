@@ -48,7 +48,7 @@ export class MailService {
     });
 
     this.awsService
-      .sendEmail([address], '구docs에서 보낸 인증메일입니다.', htmlToSend)
+      .sendEmail([address], '팔docs에서 보낸 인증메일입니다.', htmlToSend)
       .catch((error) => {
         // Promise의 catch 메서드를 사용하여 에러 처리
         console.error('전송에 실패했습니다 : ', error);
@@ -59,11 +59,7 @@ export class MailService {
     // try캐치 안에 있어도, 비동기처리면, 서버가 터짐.
   }
 
-  async sendBatchMail(
-    addressList: string[],
-    question: string,
-    articleLink: string,
-  ) {
+  sendBatchMail(addressList: string[], question: string, articleLink: string) {
     const html = readHtmlFile('batch-template.html');
     if (!html) {
       console.error('HTML 템플릿을 찾을 수 없습니다.');
@@ -76,7 +72,7 @@ export class MailService {
     });
 
     try {
-      await this.awsService
+      this.awsService
         .sendEmail(addressList, question, htmlToSend)
         .catch((error) => {
           // Promise의 catch 메서드를 사용하여 에러 처리
